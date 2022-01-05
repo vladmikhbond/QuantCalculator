@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    </head>
+<body>  
+    <link href="lib/bootstrap.min.css" rel="stylesheet">
+    <link href="app.css" rel="stylesheet">
+    <div class="container">
+    
+
+    <div class="row">
+    <div class="col-sm">
+        <!-- autocreated buttons -->
+        <div id="buttonsDiv" class="btn-group" role="group" aria-label="Basic example"></div>
+
+        <div style="margin-bottom: 6px;">
+            <span style="color: red; font: 1em  arial; font-weight: 500;">M = </span> 
+            <input type="text" id="inputA" value="">              
+        </div>
+        <div style="margin-bottom: 6px;">
+            <span style="color: green; font: 1em  arial; font-weight: 500;">B = </span> 
+            <input type="text" id="inputB" value="">              
+        </div>
+        <div style="margin-bottom: 6px;">
+            <span style="color: blue; font: 1em  arial; font-weight: 500;">C = </span> 
+            <input type="text" id="inputC" value="">              
+        </div>
+        <div style="margin-bottom: 6px;">
+            <span style="font: 1em  arial; font-weight: 500;">O = </span> 
+            <input type="text" id="oper" value="">  
+        </div>
+        <div style="margin-bottom: 6px;">
+            <span style="font: 1em  arial; font-weight: 500;">E = </span> 
+            <input type="text" id="expr" style="width: 226px;" value="">                
+            <button id="btnGo" style="background-color: whitesmoke; color: black">=</button>
+            <span id="exprRes"></span> 
+        </div>
+
+        <canvas id="canvas" width="512" height="256" style="border: solid thin"></canvas>
+</div>
+
+<!-- learning -->
+<div class="col-sm">
+    <div class="card"  style="max-width: 512px;">
+        <div class="card-body">
+            <h5 id="cardTitle" class="card-title"></h5>
+            <div id="cardText" class="card-text" style="white-space:break-spaces"></div>
+        </div>
+    </div>
+</div>
+</div>
+
+    
+<script src="lib/complex.min.js"></script>
+<script src="lib/bootstrap.bundle.min.js"></script>  
+<!-- <script src="src/1_globals.js"></script>
+<script src="src/2_data.js"></script> -->
+
+
+<script src="src/model/Matrix.js"></script>
+<script src="src/model/parser.js"></script>
+
+</body>
+</html>
