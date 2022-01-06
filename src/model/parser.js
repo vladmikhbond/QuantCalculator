@@ -1,8 +1,8 @@
 // const Complex = require('complex.js');
 // const Matrix = require("./Matrix.js");
 
-const ERMIT="^", CONJ="'", MUL="*", DIRAK="|", ADD="+", SUB="-";
-const OPERATORS = [ERMIT, CONJ, MUL, DIRAK, ADD, SUB].join('');
+const ERMIT="^", CONJ="'", MUL="*", DIRAK="|", ADD="+", SUB="-", PROB="!";
+const OPERATORS = [ERMIT, CONJ, MUL, DIRAK, ADD, SUB, PROB].join('');
 
 // знаки > и < не должны отделяться пробелом от имени
 // x> всегда означает вектор-столбец,  <x всегда означает вектор-строку,    <x = x>^
@@ -69,7 +69,7 @@ function toPoland(input) {
 
 function getPriority(op) {
    switch(op) {
-       case ERMIT: case CONJ: return 5;
+       case ERMIT: case CONJ: case PROB: return 5;
        case MUL: case DIRAK: return 4;
        case ADD: case SUB: return 3;
        case ')':  return 1;
@@ -87,7 +87,7 @@ function evalPoland(poland, ops, vals) {
    const stack = [];
    for (let lex of poland) {
       switch(lex) {
-         case ERMIT: case CONJ: 
+         case ERMIT: case CONJ: case PROB:
          let c = stack.pop();
          if (!c) throw new Error("wrong poland expression 1 ")
          let op1 = ops[lex];
@@ -120,6 +120,7 @@ const ops = {
    [SUB]: _sub,
    [MUL]: _mul,
    [DIRAK]: _dirak,
+   [PROB]: _prob,
 }
 
 function _conj(com) {
@@ -128,6 +129,15 @@ function _conj(com) {
 
 function _ermit(m) {
    return new Matrix(m).ermit().arr;
+}
+
+function _prob(x) {
+   if (x instanceof Complex)
+      return x.abs()**2;
+   if (x instanceof Array) {
+      return new Matrix(x).normalize().norma;
+   }
+   throw new Error("Type error");
 }
 
 // c+c->c,  a+c->a, c+a->a, a+a->a     // a - array, c - complex

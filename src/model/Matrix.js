@@ -1,6 +1,3 @@
-// let Complex = require('complex.js');
-// module.exports = 
-
 // [[1,2], [3,4]];   [[1,2]] - 1 row; [[1], [2]] - 1 column   
 class Matrix 
 {
@@ -81,6 +78,7 @@ class Matrix
    }
 
    // this - bra, other - ket
+   // <a|b>
    bracket(other) {
       if (!this.isBra || !other.isKet || this.arr[0].length != other.arr.length) 
           throw Error("invalid bracket operands");
@@ -88,9 +86,34 @@ class Matrix
       return arr[0][0];  
    }
 
-   // только для векторов (однострочных или одностолбцовых матриц)
-   norma() {
-      return this.bracket(this.ermit()).re ** 0.5;
+   // |a>|b> - тензор
+   
+   // |a><b|- тензор
+
+   // норма
+   get norma() {
+      let sum = this.arr.reduce((a, r) => a + r.reduce( 
+         (b, x) => b + x.re**2 + x.im**2, 0
+      ), 0);
+      return Math.sqrt(sum);
+   }
+
+   normalize() {
+      let n = this.norma;
+      this.arr = this.arr.map(r => r.map(x => x.div(n)));
+      return this;
+   }
+
+   kronecker(other) {
+      let arr = [];
+      for (let r1 of this.arr) for (let r2 of other.arr) {
+         let row = [];
+         for (let a of r1) for (let b of r2) {
+            row.push(a.mul(b));
+         }
+         arr.push(row);
+      }
+      return new Matrix(arr);
    }
 }
 
@@ -138,5 +161,14 @@ m2 = m1.ermit();
 m = m1.bracket(m2);
 console.log(assert2(m, 2));
 // norma
-m = m1.norma();
-console.log(m == 2**0.5);
+m1 = new Matrix([[2, 1],[2, 4]]);
+m = m1.norma;
+console.log(m == 5);
+// normalize
+m1.normalize();
+console.log(assert(m1, [[0.4, 0.2], [0.4, 0.8]]));
+// kronecker
+m1 = new Matrix([[1,10],[100, 1]]);
+m2 = new Matrix([[1,2],[3, 4]]);
+let a = m1.kronecker(m2).arr;
+console.log(a[2][0]==100 && a[3][1]==400 && a[0][3]==20); 
