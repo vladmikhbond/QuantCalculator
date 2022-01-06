@@ -164,11 +164,15 @@ function _mul(x, y) {
    if (x instanceof Complex && y instanceof Complex) {
       return x.mul(y);
    }
-   // c*a = a*c
+   // c*a = a
    if (x instanceof Complex && y instanceof Array) {
-      [x, y] = [y, x];
+      return new Matrix(y).mul(x).arr;
    }
-   // a+c->a, a+a->a 
+   // a*c = a
+   if (x instanceof Array && y instanceof Complex) {
+      return new Matrix(x).mul(y).arr;
+   }
+   // a*a->a 
    if (x instanceof Array) {
       return new Matrix(x).mul(new Matrix(y)).arr;
    }
@@ -176,6 +180,8 @@ function _mul(x, y) {
 }
 
 // <x|y> - скалярное произведение 
+// (|)x>|y> - тензорное произведение 
+
 // <x|n , n|y>  - умножение вектора на число n
 // <x|a , A|y> - умножение матриц x*A или A*y
 //

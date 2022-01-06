@@ -80,12 +80,17 @@ class Matrix
       return this.arr.length == 1 && this.arr.every(row => row instanceof Array);
    }
 
-   // this - row, other - column
+   // this - bra, other - ket
    bracket(other) {
       if (!this.isBra || !other.isKet || this.arr[0].length != other.arr.length) 
           throw Error("invalid bracket operands");
       let arr = this.mul(other).arr; 
       return arr[0][0];  
+   }
+
+   // только для векторов (однострочных или одностолбцовых матриц)
+   norma() {
+      return this.bracket(this.ermit()).re ** 0.5;
    }
 }
 
@@ -107,29 +112,31 @@ function assert2(comp, str) {
    return comp.equals(c);
 }
 
-// let m, m1, m2;
-// m1 = new Matrix([["i", "i"], ["i", "i"]]);
-// m2 = new Matrix([[1], [2]]);
-// // mul
-// m = m1.mul(m1);
-// console.log(assert(m, [[-2,-2],[-2,-2]]));
-// // mul
-// m =  m1.mul(m2);
-// console.log(assert(m, [["3i"],["3i"]]));
-// // ermit
-// m = m1.ermit();
-// console.log(assert(m, [["-i", "-i"], ["-i", "-i"]]));
-// // ermit
-// m = m2.ermit();
-// console.log(assert(m, [[1, 2]]));
-// // bracket
-// m1 = new Matrix([[1, 2]]);
-// m2 = new Matrix([[3], [4]]);
-// m = m1.bracket(m2);
-// console.log(assert2(m, 11));
-
-// m1 = new Matrix([["i", "i"]]);
-// m2 = m1.ermit();
-// m = m1.bracket(m2);
-// console.log(assert2(m, 2));
-
+let m, m1, m2;
+m1 = new Matrix([["i", "i"], ["i", "i"]]);
+m2 = new Matrix([[1], [2]]);
+// mul
+m = m1.mul(m1);
+console.log(assert(m, [[-2,-2],[-2,-2]]));
+// mul
+m =  m1.mul(m2);
+console.log(assert(m, [["3i"],["3i"]]));
+// ermit
+m = m1.ermit();
+console.log(assert(m, [["-i", "-i"], ["-i", "-i"]]));
+// ermit
+m = m2.ermit();
+console.log(assert(m, [[1, 2]]));
+// bracket
+m1 = new Matrix([[1, 2]]);
+m2 = new Matrix([[3], [4]]);
+m = m1.bracket(m2);
+console.log(assert2(m, 11));
+// bracket
+m1 = new Matrix([["i", "i"]]);
+m2 = m1.ermit();
+m = m1.bracket(m2);
+console.log(assert2(m, 2));
+// norma
+m = m1.norma();
+console.log(m == 2**0.5);

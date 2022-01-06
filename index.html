@@ -14,23 +14,33 @@
         <div id="buttonsDiv" class="btn-group" role="group" aria-label="Basic example"></div>
 
         <div style="margin-bottom: 6px;">
-            <input type="text" id="name0" value="y>" class="v1">
+            <input type="text" id="name0" value="a>" class="v1">
             <span class="v2"> = </span> 
-            <input type="text" id="value0" value='[[-1.1],["2+i"]]' class="v3">              
+            <input type="text" id="value0" value='[[0],[1]]' class="v3">              
         </div>
         <div style="margin-bottom: 6px;">
-            <input type="text" id="name1" value="&lt;x" class="v1">
+            <input type="text" id="name1" value="Sx" class="v1">
             <span class="v2"> = </span> 
-            <input type="text" id="value1" value="[[1,2]]" class="v3">              
+            <input type="text" id="value1" value="[[0, 1],[1, 0]]" class="v3">              
         </div>
         <div style="margin-bottom: 6px;">
             <input type="text" id="name2" value="z" class="v1">
             <span class="v2"> = </span> 
-            <input type="text" id="value2" value="i+i" class="v3">              
+            <input type="text" id="value2" value="1" class="v3">              
+        </div>
+        <div style="margin-bottom: 6px;">
+            <input type="text" id="name3" value="" class="v1">
+            <span class="v2"> = </span> 
+            <input type="text" id="value3" value="" class="v3">              
+        </div>
+        <div style="margin-bottom: 6px;">
+            <input type="text" id="name4" value="" class="v1">
+            <span class="v2"> = </span> 
+            <input type="text" id="value4" value="" class="v3">              
         </div>
         
         <div style="margin-bottom: 6px;">
-            <input type="text" id="expr" style="width: 226px;" value="y>^">                
+            <input type="text" id="expr" style="width: 226px;" value="z*Sx">                
             <button id="btnGo" style="background-color: whitesmoke; color: black">=</button>
             <span id="exprRes"></span> 
         </div>
@@ -56,6 +66,7 @@
 
 <script src="src/model/Matrix.js"></script>
 <script src="src/model/parser.js"></script>
+<script src="src/model/evaluator.js"></script>
 <script src="src/model/controller.js"></script>
 </body>
 </html>
