@@ -1,20 +1,41 @@
-function valuesDict(n) {
+function fillValuesDict(n) 
+{
    let values = new Map();
    for (let i = 0; i < n; i++) {
-      let name = document.getElementById("name"+i).value;
-      let value = document.getElementById("value"+i).value;
-      if (!name || !value) 
-         continue;
-      if (value.indexOf('[') != -1) {
-         value = JSON.parse(value);  // TODO json временно
-      } else {
-         value = new Complex(value);
-      }     
-      values[name] = value;
+      let lvalue = document.getElementById("name"+i).value.trim();
+      let rvalue = document.getElementById("value"+i).value.trim();
+      if (lvalue && rvalue) {
+         values[lvalue] = getValue(lvalue, rvalue);
+      }
    }
    return values;
 }
 
+function getValue(lvalue, rvalue) {
+   // bra
+   if (lvalue[0] =="<") {
+      let v = rvalue.replace(/[\[\]]/g, "").split(",")
+          .map(x => new Complex(x));
+      return [v];
+   }
+   //ket
+   if (lvalue.slice(-1) ==">") {
+      let v = rvalue.replace(/[\[\]]/g, "").split(",")
+          .map(x => new Complex(x));
+      return v.map(x => [x]);
+   }
+   // matrix
+   if (rvalue.indexOf('[') != -1) {
+      return JSON.parse(rvalue); 
+   } 
+   if (rvalue.indexOf(',') != -1 || rvalue.indexOf(';') != -1) {
+      let rows = rvalue.split(";").filter(r => r.trim());
+      let v = rows.map(r => r.split(',').map(x => new Complex(x)));
+      return v; 
+   } 
+   
+   return new Complex(rvalue);       
+}
 
 function evalExpr(expr, values) {
    let lexems = lexical(expr);
