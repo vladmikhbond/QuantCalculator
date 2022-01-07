@@ -7,8 +7,13 @@ const $exprRes = document.getElementById("exprRes");
 $btnGo.addEventListener('click', refresh);
 
 function refresh() {
-  let values = valuesDict(5);
-  let str = evalExpr($expr.value, values);
-  str = beautifyResult(str);
+  let str = null;
+  try {
+    let values = fillValuesDict(5);
+    str = evalExpr($expr.value, values);
+    str = beautifyResult(str);
+  } catch(e) {
+    str = e.message
+  }
   $exprRes.innerHTML = str;       
 }
