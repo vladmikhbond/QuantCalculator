@@ -1,8 +1,8 @@
 // const Complex = require('complex.js');
 // const Matrix = require("./Matrix.js");
 
-const ERMIT="^", CONJ="'", MUL="*", DIRAK="|", ADD="+", SUB="-", PROB="!";
-const OPERATORS = [ERMIT, CONJ, MUL, DIRAK, ADD, SUB, PROB].join('');
+const ERMIT="^", CONJ="'", MUL="*", DIRAK="|", ADD="+", SUB="-", PROB="!", KRON="#";
+const OPERATORS = [ERMIT, CONJ, MUL, DIRAK, ADD, SUB, PROB, KRON].join('');
 
 // знаки > и < не должны отделяться пробелом от имени
 // x> всегда означает вектор-столбец,  <x всегда означает вектор-строку,    <x = x>^
@@ -70,7 +70,7 @@ function toPoland(input) {
 function getPriority(op) {
    switch(op) {
        case ERMIT: case CONJ: case PROB: return 5;
-       case MUL: case DIRAK: return 4;
+       case MUL: case DIRAK: case KRON: return 4;
        case ADD: case SUB: return 3;
        case ')':  return 1;
        case '(':  return 0;     
@@ -94,7 +94,7 @@ function evalPoland(poland, ops, vals) {
          stack.push(op1(c)); 
          break;
 
-         case ADD: case SUB:case MUL: case DIRAK: 
+         case ADD: case SUB:case MUL: case DIRAK: case KRON: 
          let c2 = stack.pop();
          let c1 = stack.pop();
          if (!c1 || !c2) throw new Error("wrong poland expression 2")
@@ -121,6 +121,7 @@ const ops = {
    [MUL]: _mul,
    [DIRAK]: _dirak,
    [PROB]: _prob,
+   [KRON]: _kron,
 }
 
 function _conj(com) {
@@ -189,9 +190,11 @@ function _mul(x, y) {
    throw new Error("Type error");
 }
 
-// <x|y> - скалярное произведение 
+
 // (|)x>|y> - тензорное произведение 
 
+
+// <x|y> - скалярное произведение 
 // <x|n , n|y>  - умножение вектора на число n
 // <x|a , A|y> - умножение матриц x*A или A*y
 //
@@ -216,6 +219,12 @@ function _dirak(x, y) {
       }
       error();
    }
+   if (xm && xm.isKet) { 
+      if (ym && ym.isKet) {
+         // x>|y>
+         return xm.kronКetКet(ym).arr;
+      } 
+   }
    if (xm) {
       if (ym && ym.isKet) {
          // A|y>
@@ -233,6 +242,10 @@ function _dirak(x, y) {
    error();  
 }
 
+// A # B 
+function _kron(x, y) {
+   return new Matrix(x).kron(new Matrix(y)).arr;
+}
 
 //========================= TEST ===============================
 

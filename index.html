@@ -16,33 +16,37 @@
         <div style="margin-bottom: 6px;">
             <input type="text" id="name0" value="&lt;x" class="v1">
             <span class="v2"> = </span> 
-            <input type="text" id="value0" value='[[0+i],[0.1-i]]' class="v3">              
+            <input type="text" id="value0" value='0 + i , 0.1 - i' class="v3">              
+            <span id="info0" class="v4"></span>               
         </div>
         <div style="margin-bottom: 6px;">
-            <input type="text" id="name1" value="M" class="v1">
+            <input type="text" id="name1" value="x>" class="v1">
             <span class="v2"> = </span> 
-            <input type="text" id="value1" value="[[0, 1],[1, 0]]" class="v3">              
+            <input type="text" id="value1" value="0 + i / 0.1 + i" class="v3">
+            <span id="info1" class="v4"></span>               
         </div>
         <div style="margin-bottom: 6px;">
             <input type="text" id="name2" value="N" class="v1">
             <span class="v2"> = </span> 
-            <input type="text" id="value2" value="0, 1; 1, 0" class="v3">              
+            <input type="text" id="value2" value="1, 2 / 3, 4" class="v3">              
+            <span id="info2" class="v4"></span>               
         </div>
         <div style="margin-bottom: 6px;">
-            <input type="text" id="name3" value="" class="v1">
+            <input type="text" id="name3" value="M" class="v1">
             <span class="v2"> = </span> 
-            <input type="text" id="value3" value="" class="v3">              
-        </div>
+            <input type="text" id="value3" value="10, 20 / 30, 40" class="v3">              
+            <span id="info3" class="v4"></span>               
+       </div>
         <div style="margin-bottom: 6px;">
             <input type="text" id="name4" value="" class="v1">
             <span class="v2"> = </span> 
             <input type="text" id="value4" value="" class="v3">              
-        </div>
-        
+            <span id="info4" class="v4"></span>               
+        </div>    
         <div style="margin-bottom: 6px;">
-            <input type="text" id="expr" style="width: 226px;" value="&lt;x">                
+            <input type="text" id="expr" style="width: 226px;" value="N # M">                
             <button id="btnGo" style="background-color: whitesmoke; color: black">=</button>
-            <span id="exprRes"></span> 
+            <span id="exprRes"></span>              
         </div>
 
         <canvas id="canvas" width="512" height="256" style="border: solid thin"></canvas>

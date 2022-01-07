@@ -12,28 +12,11 @@ function fillValuesDict(n)
 }
 
 function getValue(lvalue, rvalue) {
-   // bra
-   if (lvalue[0] =="<") {
-      let v = rvalue.replace(/[\[\]]/g, "").split(",")
-          .map(x => new Complex(x));
-      return [v];
-   }
-   //ket
-   if (lvalue.slice(-1) ==">") {
-      let v = rvalue.replace(/[\[\]]/g, "").split(",")
-          .map(x => new Complex(x));
-      return v.map(x => [x]);
-   }
-   // matrix
-   if (rvalue.indexOf('[') != -1) {
-      return JSON.parse(rvalue); 
-   } 
-   if (rvalue.indexOf(',') != -1 || rvalue.indexOf(';') != -1) {
-      let rows = rvalue.split(";").filter(r => r.trim());
+   if (rvalue.indexOf(',') != -1 || rvalue.indexOf('/') != -1) {
+      let rows = rvalue.split("/").filter(r => r.trim());
       let v = rows.map(r => r.split(',').map(x => new Complex(x)));
       return v; 
-   } 
-   
+   }   
    return new Complex(rvalue);       
 }
 
@@ -41,21 +24,17 @@ function evalExpr(expr, values) {
    let lexems = lexical(expr);
    let poland = toPoland(lexems);
    let result = evalPoland(poland, ops, values);
-   let str = result instanceof Array ? JSON.stringify(result) : result.toString();
-   return str;
+   return result;
 }
      
 
-function beautifyResult(str) {
-   // заменяем комп числа строеками:  {"re": 0.5, "im": -1.2} -> "0.5-1.2i"
+function beautifyResult(result) {
+   let str = result instanceof Array ? JSON.stringify(result) : result.toString();
+   // заменяем комп числа строками:  {"re": 0.5, "im": -1.2} -> "0.5-1.2i"
    let regex = /\{"re":(\-?\d*\.?\d*),"im":(\-?\d*\.?\d*)\}/g;
    str = str.replaceAll(regex, replacer );
    // ставим пробел после запятой
    str = str.replaceAll(",", ", " );
-   // убираем внешне скобки, если они есть
-   // if (str[0] == '[' && str[str.length - 1] == ']') {
-   //    str = str.slice(1, -1);
-   // }
    return str;
  
    function replacer(s, re, im) {

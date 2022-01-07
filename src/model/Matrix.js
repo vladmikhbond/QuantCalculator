@@ -104,7 +104,7 @@ class Matrix
       return this;
    }
 
-   kronecker(other) {
+   kron(other) {
       let arr = [];
       for (let r1 of this.arr) for (let r2 of other.arr) {
          let row = [];
@@ -112,6 +112,15 @@ class Matrix
             row.push(a.mul(b));
          }
          arr.push(row);
+      }
+      return new Matrix(arr);
+   }
+
+   // this и other - кет-векторы 
+   kronКetКet(other) {
+      let arr = [];
+      for (let a of this.arr) for (let b of other.arr) {         
+         arr.push([a[0].mul(b[0])]);
       }
       return new Matrix(arr);
    }
@@ -167,8 +176,13 @@ console.log(m == 5);
 // normalize
 m1.normalize();
 console.log(assert(m1, [[0.4, 0.2], [0.4, 0.8]]));
-// kronecker
+// kron
 m1 = new Matrix([[1,10],[100, 1]]);
 m2 = new Matrix([[1,2],[3, 4]]);
-let a = m1.kronecker(m2).arr;
+let a = m1.kron(m2).arr;
 console.log(a[2][0]==100 && a[3][1]==400 && a[0][3]==20); 
+// kronKetKet
+m1 = new Matrix([[1],[3]]);
+m2 = new Matrix([[10],[20]]);
+a = m1.kronКetКet(m2).arr;
+console.log(a[0][0]==10 && a[1][0]==20 && a[2][0]==30 && a[3][0]==60); 
