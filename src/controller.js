@@ -10,6 +10,7 @@ function refresh() {
   let str = null;
   try {
     let values = fillValuesDict(5);
+    // show variables
     for (let i = 0; i < 5; i++) {
       let lvalue = document.getElementById("name"+i).value.trim();
       let info = document.getElementById("info"+i);
@@ -17,11 +18,12 @@ function refresh() {
          info.innerHTML = beautifyResult(values[lvalue]);
       }
     }
-    let res = evalExpr($expr.value, values);
-    str = beautifyResult(res);
+    // show expression value
+    let result = evalExpr($expr.value, values);
+    $exprRes.innerHTML = beautifyResult(result);
+    draw(result);
   } catch(e) {
-    str = e.message;
+    $exprRes.innerHTML = e.message;
     throw e;
-  }
-  $exprRes.innerHTML = str;       
+  }    
 }
