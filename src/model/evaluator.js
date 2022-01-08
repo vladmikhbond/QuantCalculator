@@ -124,6 +124,7 @@ function _mul(x, y) {
 
 
 // <x|y> - скалярное произведение 
+// x>|y> - тензорное произведение 
 // <x|c , c|y>  - умножение вектора на число c
 // <x|A , A|y> - умножение матриц x*A или A*y
 //
@@ -136,6 +137,10 @@ function _dirak(x, y) {
    // <x|y>
    if (xm && xm.isBra && ym && ym.isKet) {    
       return xm.bracket(ym);
+   } 
+   // x>|y>
+   if (xm && xm.isKet && ym && ym.isKet) {    
+      return xm.kronecker(ym).arr;
    }   
    // <x|A , A|y>
    if (xm && ym) {
