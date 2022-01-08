@@ -5,34 +5,72 @@ function evalExpr(expr, values) {
    let result = evalPoland(poland, ops, values);
    return result;
 }
-     
+
+function evalPoland(poland, ops, vals) {
+   const stack = [];
+   for (let lex of poland) {
+      switch(lex) {
+         // unaries
+         case ERMIT: case NORM: case BRA: case PROB:
+         let c = stack.pop();
+         if (!c) throw new Error("wrong poland expression 1 ")
+         let op1 = ops[lex];
+         stack.push(op1(c)); 
+         break;
+         // binaries
+         case ADD: case SUB:case MUL: case DIRAK: case KRON: 
+         let c2 = stack.pop();
+         let c1 = stack.pop();
+         if (!c1 || !c2) throw new Error("wrong poland expression 2")
+         let op2 = ops[lex];
+         stack.push(op2(c1, c2)); 
+         break;
+
+         default:
+            if (!vals[lex]) throw new Error("wrong poland expression V")
+            stack.push(vals[lex]);
+      }      
+   }
+          
+   return stack[0];
+}
+
+
 const ops = {
-   [CONJ]: _conj,
+   //[CONJ]: _conj,
    [ERMIT]: _ermit,
+   [BRA]: _ermit,
    [ADD]: _add,
    [SUB]: _sub,
    [MUL]: _mul,
    [DIRAK]: _dirak,
-   [PROB]: _prob,
+   //[PROB]: _prob,
    [KRON]: _kron,
+   //[NORM]: _norm,
 }
 
 function _conj(com) {
    return com.conjugate();
 }
 
-function _ermit(m) {
-   return new Matrix(m).ermit().arr;
-}
-
-function _prob(x) {
-   if (x instanceof Complex)
-      return x.abs()**2;
+function _ermit(x) {
    if (x instanceof Array) {
-      return new Matrix(x).normalize().norma;
+       return new Matrix(x).ermit().arr;
+   }
+   if (x instanceof Complex) {
+       return x.conjugate();
    }
    throw new Error("Type error");
 }
+
+// function _prob(x) {
+//    if (x instanceof Complex)
+//       return x.abs()**2;
+//    if (x instanceof Array) {
+//       return new Matrix(x).normalize().norma;
+//    }
+//    throw new Error("Type error");
+// }
 
 // c+c->c,  a+c->a, c+a->a, a+a->a     // a - array, c - complex
 function _add(x, y) {
@@ -84,9 +122,9 @@ function _mul(x, y) {
 }
 
 
-// (|)x>|y> - тензорное произведение 
+
 // <x|y> - скалярное произведение 
-// <x|n , n|y>  - умножение вектора на число n
+// <x|c , c|y>  - умножение вектора на число c
 // <x|A , A|y> - умножение матриц x*A или A*y
 //
 function _dirak(x, y) {
@@ -95,47 +133,28 @@ function _dirak(x, y) {
    let xm = x instanceof Array ? new Matrix(x) : null;
    let ym = y instanceof Array ? new Matrix(y) : null;
 
-   if (xm && xm.isBra) { 
-      if (ym && ym.isKet) {
-         // <x|y>
-         return xm.bracket(ym);
-      }   
-      if (ym) {
-         // <x|a
-         return xm.mul(ym).arr;
-      }
-      if (y instanceof Complex) {
-         // <x|n
-         return xm.mul(y).arr;
-      }
-      error();
+   // <x|y>
+   if (xm && xm.isBra && ym && ym.isKet) {    
+      return xm.bracket(ym);
+   }   
+   // <x|A , A|y>
+   if (xm && ym) {
+      return xm.mul(ym).arr;
    }
-   if (xm && xm.isKet) { 
-      if (ym && ym.isKet) {
-         // x>|y>
-         return xm.kronКetКet(ym).arr;
-      } 
+   // <x|c
+   if (xm && y instanceof Complex) {
+      return xm.mul(y).arr;
    }
-   if (xm) {
-      if (ym && ym.isKet) {
-         // A|y>
-         return xm.mul(ym).arr;
-      } 
-      error();
-   }
-   if (x instanceof Complex) {
-      if (ym && ym.isKet) {
-         // n|y>
-         return ym.mul(x).arr;
-      }
-      error();
-   }
+   // c|y> 
+   if (x instanceof Complex && ym) {
+      return ym.mul(x).arr;
+   }    
    error();  
 }
 
-// A # B 
+// A # B - тензорное произведение 
 function _kron(x, y) {
-   return new Matrix(x).kron(new Matrix(y)).arr;
+   return new Matrix(x).kronecker(new Matrix(y)).arr;
 }
 
 //========================= TEST ===============================
@@ -153,26 +172,18 @@ function assign(input, expected, values) {
    let res = evalPoland(poland, ops, values);
    console.log(complexArrayEquals(res, expected));
 }
-// все числа комплексные
-const vals = {
-   "c1": new Complex(1),
-   "c2": new Complex(2),
-   "e1>": [[1],[2]],
-   "e2>": [[2],[3]],
-   "x": [["i","2i","3i"]]
-}
 
-// assign("e1>^", [[1,2]], {"e1>": [[1],[2]]});
-// assign("e1>^^", [[1,2]], {"e1>": [[1,2]]});
-// assign("e1'", new Complex(1, 2), {"e1": new Complex(1, -2)});
-
-// assign("e1>+e1>", [[2,4]], {"e1>": [[1,2]]});
-// assign("e1>-e1>", [[0,0]], {"e1>": [[1,2]]});
-// assign("e1>*e1>^", [[5]], {"e1>": [[1,2]]});
-// assign("A*e1>",  [[1],[2]], {"e1>": [[1],[2]], "A": [[1,0], [0,1]]});
-// assign("A|e1>",  [[1],[2]], {"e1>": [[1],[2]], "A": [[1,0], [0,1]]});
-// assign("n|e1>",  [[1],[2]], {"e1>": [[1],[2]], "n": new Complex(1)});
-// assign("<x|y>",  5, {"<x": [[1, 2]], "y>": [[1],[2]]});
-// assign("<x|I|y>",  5, {"<x": [[1, 2]], "y>": [[1],[2]], "I": [[1,0], [0,1]] });
-
-assign("<u|l>",  0.7, {"<u": [[1, 0]], "l>": [[0.7],[0.7]] });
+console.log("evaluator tests");
+assign("e1'", [[1,2]], {"e1": [[1],[2]]});
+assign("<e1", [[1,2]], {"e1": [[1],[2]]});
+assign("e1''", [[1,2]], {"e1": [[1,2]]});
+assign("e1'", new Complex(1, 2), {"e1": new Complex(1, -2)});
+assign("e1+e1", [[2,4]], {"e1": [[1,2]]});
+assign("e1-e1>", [[0,0]], {"e1": [[1,2]]});
+assign("e1>*e1>'", [[5]], {"e1": [[1,2]]});
+assign("A*e1>",  [[1],[2]], {"e1": [[1],[2]], "A": [[1,0], [0,1]]});
+assign("A|e1>",  [[1],[2]], {"e1": [[1],[2]], "A": [[1,0], [0,1]]});
+assign("c|e1>",  [[1],[2]], {"e1": [[1],[2]], "c": new Complex(1)});
+assign("<x|y>",  5, {"x": [[1], [2]], "y": [[1],[2]]});
+assign("<x|I|y>",  5, {"x": [[1], [2]], "y": [[1],[2]], "I": [[1,0], [0,1]] });
+assign("<u|l>",  0.7, {"u": [[1], [0]], "l": [[0.7],[0.7]] });

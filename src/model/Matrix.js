@@ -86,7 +86,7 @@ class Matrix
       return arr[0][0];  
    }
 
-   // |a>|b> - тензор
+
    
    // |a><b|- тензор
 
@@ -104,7 +104,7 @@ class Matrix
       return this;
    }
 
-   kron(other) {
+   kronecker(other) {
       let arr = [];
       for (let r1 of this.arr) for (let r2 of other.arr) {
          let row = [];
@@ -116,14 +116,6 @@ class Matrix
       return new Matrix(arr);
    }
 
-   // this и other - кет-векторы 
-   kronКetКet(other) {
-      let arr = [];
-      for (let a of this.arr) for (let b of other.arr) {         
-         arr.push([a[0].mul(b[0])]);
-      }
-      return new Matrix(arr);
-   }
 }
 
 // ================== TESTS =======================================
@@ -144,6 +136,7 @@ function assert2(comp, str) {
    return comp.equals(c);
 }
 
+console.log("Matrix tests");
 let m, m1, m2;
 m1 = new Matrix([["i", "i"], ["i", "i"]]);
 m2 = new Matrix([[1], [2]]);
@@ -179,10 +172,14 @@ console.log(assert(m1, [[0.4, 0.2], [0.4, 0.8]]));
 // kron
 m1 = new Matrix([[1,10],[100, 1]]);
 m2 = new Matrix([[1,2],[3, 4]]);
-let a = m1.kron(m2).arr;
+let a = m1.kronecker(m2).arr;
 console.log(a[2][0]==100 && a[3][1]==400 && a[0][3]==20); 
-// kronKetKet
+
 m1 = new Matrix([[1],[3]]);
 m2 = new Matrix([[10],[20]]);
-a = m1.kronКetКet(m2).arr;
+a = m1.kronecker(m2).arr;
 console.log(a[0][0]==10 && a[1][0]==20 && a[2][0]==30 && a[3][0]==60); 
+
+m2 = new Matrix([[10, 20]]);
+a = m1.kronecker(m2).arr;
+console.log(a[0][0]==10 && a[0][1]==20 && a[1][0]==30 && a[1][1]==60); 

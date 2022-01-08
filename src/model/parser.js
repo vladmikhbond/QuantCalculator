@@ -1,13 +1,12 @@
-const ERMIT="^", CONJ="'", MUL="*", DIRAK="|", ADD="+", SUB="-", PROB="!", KRON="#";
-const OPERATORS = [ERMIT, CONJ, MUL, DIRAK, ADD, SUB, PROB, KRON].join('');
+const ERMIT="'", NORM="~", BRA="<", PROB="!", MUL="*", KRON="#", ADD="+", SUB="-", DIRAK="|"  ;
+const OPERATORS = [ERMIT, NORM, BRA, PROB, MUL, KRON, ADD, SUB, DIRAK].join('');
 
-// знаки > и < не должны отделяться пробелом от имени
-// x> всегда означает вектор-столбец,  <x всегда означает вектор-строку,    <x = x>^
+
 //
 function lexical (str) {
    str = str + " stop";
-   let regEx = /<?([\wψ])+>?/g;
-   let matches = [...regEx[Symbol.matchAll](str)];
+   let regExForName = /[\wψ]+/g;
+   let matches = [...regExForName[Symbol.matchAll](str)];
    let gap0 = str.slice(0, matches[0].index);
    let result = gap0.split('').filter(c => c != ' ');
    for (let i = 0; i < matches.length - 1; i++) {
@@ -52,7 +51,7 @@ function toPoland(input) {
                stack.push(lex);
            }          
        } 
-       else 
+       else if (lex != '>') 
        {
           output.push(lex);
        }       
@@ -66,9 +65,10 @@ function toPoland(input) {
 
 function getPriority(op) {
    switch(op) {
-       case ERMIT: case CONJ: case PROB: return 5;
-       case MUL: case DIRAK: case KRON: return 4;
+       case ERMIT: case NORM: case PROB: case BRA: return 5;
+       case MUL: case KRON: return 4;
        case ADD: case SUB: return 3;
+       case DIRAK: 2
        case ')':  return 1;
        case '(':  return 0;     
    }
@@ -80,30 +80,21 @@ function priorityInTop(stack) {
 }
 
 
-function evalPoland(poland, ops, vals) {
-   const stack = [];
-   for (let lex of poland) {
-      switch(lex) {
-         case ERMIT: case CONJ: case PROB:
-         let c = stack.pop();
-         if (!c) throw new Error("wrong poland expression 1 ")
-         let op1 = ops[lex];
-         stack.push(op1(c)); 
-         break;
-
-         case ADD: case SUB:case MUL: case DIRAK: case KRON: 
-         let c2 = stack.pop();
-         let c1 = stack.pop();
-         if (!c1 || !c2) throw new Error("wrong poland expression 2")
-         let op2 = ops[lex];
-         stack.push(op2(c1, c2)); 
-         break;
-
-         default:
-            if (!vals[lex]) throw new Error("wrong poland expression V")
-            stack.push(vals[lex]);
-      }      
-   }
-          
-   return stack[0];
+//===================== TEST ================================
+function assert(input, exp ) {
+   let ans = lexical(input);
+   ans = toPoland(ans).join('');
+   console.log(ans == exp);
 }
+console.log("parser tests");
+assert("<a+b|c+d>", "a<b+cd+|");
+assert("<(a+b)|(c+d)>", "ab+<cd+|");
+assert("(<a)+b|c+d>", "a<b+cd+|");
+assert("<a|b|c>", "a<b|c|");
+assert("<a'#b|c>", "a<'b#c|");
+
+assert("a>#<b", "ab<#");
+assert("a>#b>", "ab#");
+
+
+

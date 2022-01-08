@@ -4,7 +4,12 @@ const $btnGo = document.getElementById("btnGo");
 const $expr = document.getElementById("expr");
 const $exprRes = document.getElementById("exprRes");
 
-$btnGo.addEventListener('click', refresh);
+$btnGo.addEventListener('click', r);
+
+function r() {
+  let str = toPoland($expr.value);
+  $exprRes.innerHTML = str;
+}
 
 function refresh() {
   let str = null;
