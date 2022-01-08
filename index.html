@@ -12,11 +12,11 @@
     <div class="col-sm">
         <!-- autocreated buttons -->
         <div id="buttonsDiv" class="btn-group" role="group" aria-label="Basic example"></div>
-
-        <div style="margin-bottom: 6px;">
-            <input type="text" id="name0" value="&lt;x" class="v1">
-            <span class="v2"> = </span> 
-            <input type="text" id="value0" value='0 + i , 0.1 - i' class="v3">              
+        <div id="father"></div>
+        <!-- <div class="v0">
+            <input id="name0" class="v1">
+            <span class="v2">=</span> 
+            <input id="value0" class="v3">              
             <span id="info0" class="v4"></span>               
         </div>
         <div style="margin-bottom: 6px;">
@@ -42,7 +42,8 @@
             <span class="v2"> = </span> 
             <input type="text" id="value4" value="10 - 2i" class="v3">              
             <span id="info4" class="v4"></span>               
-        </div>    
+        </div>     -->
+
         <div style="margin-bottom: 6px;">
             <input type="text" id="expr" style="width: 226px;" value="t">                
             <button id="btnGo" style="background-color: whitesmoke; color: black">=</button>
@@ -63,6 +64,24 @@
 </div>
 </div>
 
+<script>
+function f(n) {
+    let father = document.getElementById('father');
+    for (let i = 0; i < 8; i++) {
+        let div = document.createElement("div");
+        div.className="v0";
+        div.innerHTML = `
+<input id="name${i}" class="v1" value="${i}">
+<span class="v2">=</span> 
+<input id="value${i}" class="v3">              
+<span id="info0" class="v4"></span>`;
+        father.append(div);
+    }
+}
+f(8);    
+
+
+</script>
     
 <script src="lib/complex.min.js"></script>
 <script src="lib/bootstrap.bundle.min.js"></script>  

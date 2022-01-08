@@ -44,9 +44,22 @@ const ops = {
    [SUB]: _sub,
    [MUL]: _mul,
    [DIRAK]: _dirak,
-   //[PROB]: _prob,
    [KRON]: _kron,
-   //[NORM]: _norm,
+   [NORM]: _norm,
+    //[PROB]: _prob,
+}
+
+// function _prob(x) {
+//    if (x instanceof Complex)
+//       return x.abs()**2;
+//    if (x instanceof Array) {
+//       return new Matrix(x).normalize().norma;
+//    }
+//    throw new Error("Type error");
+// }
+
+function _norm(m) {
+   return new Matrix(n).normalize().arr;
 }
 
 function _conj(com) {
@@ -62,15 +75,6 @@ function _ermit(x) {
    }
    throw new Error("Type error");
 }
-
-// function _prob(x) {
-//    if (x instanceof Complex)
-//       return x.abs()**2;
-//    if (x instanceof Array) {
-//       return new Matrix(x).normalize().norma;
-//    }
-//    throw new Error("Type error");
-// }
 
 // c+c->c,  a+c->a, c+a->a, a+a->a     // a - array, c - complex
 function _add(x, y) {
