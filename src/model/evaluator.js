@@ -52,7 +52,7 @@ const ops = {
 // }
 
 function _norm(m) {
-   return new Matrix(n).normalize().arr;
+   return new Matrix(m).normalize().arr;
 }
 
 function _conj(com) {
@@ -172,20 +172,20 @@ function assign(input, expected, values) {
    let lexems = lexical(input);
    let poland = toPoland(lexems);
    let res = evalPoland(poland, ops, values);
-   console.log(complexArrayEquals(res, expected));
+   return complexArrayEquals(res, expected);
 }
 
 console.log("evaluator tests");
-assign("e1'", [[1,2]], {"e1": [[1],[2]]});
-assign("<e1", [[1,2]], {"e1": [[1],[2]]});
-assign("e1''", [[1,2]], {"e1": [[1,2]]});
-assign("e1'", new Complex(1, 2), {"e1": new Complex(1, -2)});
-assign("e1+e1", [[2,4]], {"e1": [[1,2]]});
-assign("e1-e1>", [[0,0]], {"e1": [[1,2]]});
-assign("e1>*e1>'", [[5]], {"e1": [[1,2]]});
-assign("A*e1>",  [[1],[2]], {"e1": [[1],[2]], "A": [[1,0], [0,1]]});
-assign("A|e1>",  [[1],[2]], {"e1": [[1],[2]], "A": [[1,0], [0,1]]});
-assign("c|e1>",  [[1],[2]], {"e1": [[1],[2]], "c": new Complex(1)});
-assign("<x|y>",  5, {"x": [[1], [2]], "y": [[1],[2]]});
-assign("<x|I|y>",  5, {"x": [[1], [2]], "y": [[1],[2]], "I": [[1,0], [0,1]] });
-assign("<u|l>",  0.7, {"u": [[1], [0]], "l": [[0.7],[0.7]] });
+console.log(assign("e1'", [[1,2]], {"e1": [[1],[2]]}))
+console.log(assign("<e1", [[1,2]], {"e1": [[1],[2]]}))
+console.log(assign("e1''", [[1,2]], {"e1": [[1,2]]}))
+console.log(assign("e1'", new Complex(1, 2), {"e1": new Complex(1, -2)}))
+console.log(assign("e1+e1", [[2,4]], {"e1": [[1,2]]}))
+console.log(assign("e1-e1>", [[0,0]], {"e1": [[1,2]]}))
+console.log(assign("e1>*e1>'", [[5]], {"e1": [[1,2]]}))
+console.log(assign("A*e1>",  [[1],[2]], {"e1": [[1],[2]], "A": [[1,0], [0,1]]}))
+console.log(assign("A|e1>",  [[1],[2]], {"e1": [[1],[2]], "A": [[1,0], [0,1]]}))
+console.log(assign("c|e1>",  [[1],[2]], {"e1": [[1],[2]], "c": new Complex(1)}))
+console.log(assign("<x|y>",  5, {"x": [[1], [2]], "y": [[1],[2]]}))
+console.log(assign("<x|I|y>",  5, {"x": [[1], [2]], "y": [[1],[2]], "I": [[1,0], [0,1]] }))
+console.log(assign("<u|l>",  0.7, {"u": [[1], [0]], "l": [[0.7],[0.7]] }))

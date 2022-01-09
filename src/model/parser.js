@@ -4,7 +4,7 @@ const OPERATORS = [ERMIT, NORM, BRA, PROB, MUL, KRON, ADD, SUB, DIRAK].join('');
 //
 function lexical (str) {
    str = str + " stop";
-   let regExForName = /[\wψ]+/g;
+   let regExForName = /[\wαβγδεζηθικλμνξοπρςστυφχψω_]+/g;
    let matches = [...regExForName[Symbol.matchAll](str)];
    let gap0 = str.slice(0, matches[0].index);
    let result = gap0.split('').filter(c => c != ' ');
@@ -83,17 +83,16 @@ function priorityInTop(stack) {
 function assert(input, exp ) {
    let ans = lexical(input);
    ans = toPoland(ans).join('');
-   console.log(ans == exp);
+   return ans == exp;
 }
 console.log("parser tests");
-assert("<a+b|c+d>", "a<b+cd+|");
-assert("<(a+b)|(c+d)>", "ab+<cd+|");
-assert("(<a)+b|c+d>", "a<b+cd+|");
-assert("<a|b|c>", "a<b|c|");
-assert("<a'#b|c>", "a<'b#c|");
-
-assert("a>#<b", "ab<#");
-assert("a>#b>", "ab#");
+console.log(assert("<a+b|c+d>", "a<b+cd+|"));
+console.log(assert("<(a+b)|(c+d)>", "ab+<cd+|"));
+console.log(assert("(<a)+b|c+d>", "a<b+cd+|"));
+console.log(assert("<a|b|c>", "a<b|c|"));
+console.log(assert("<a'#b|c>", "a<'b#c|"));
+console.log(assert("a>#<b", "ab<#"));
+console.log(assert("a>#b>", "ab#"));
 
 
 

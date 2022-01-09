@@ -5,17 +5,20 @@
 <body>  
     <link href="lib/bootstrap.min.css" rel="stylesheet">
     <link href="app.css" rel="stylesheet">
-    <div class="container">
-    
+    <div class="container">    
 
     <div class="row">
     <div class="col-sm">
         <!-- autocreated buttons -->
         <div id="buttonsDiv" class="btn-group" role="group" aria-label="Basic example"></div>
-        <div id="father"></div>
+
+        <div id="parent"></div>
 
         <div style="margin-bottom: 6px;">
-            <button id="btnGo" style="background-color: whitesmoke; color: black">=</button>
+            <button id="btnAdd" style="background-color: whitesmoke; color: black">+</button>
+            <button id="btnRemove" style="background-color: whitesmoke; color: black">-</button>
+            <button id="btnGo" style="background-color: limegreen; color: black">=</button>
+            
         </div>
 
         <canvas id="canvas" width="512" height="256" style="border: solid thin"></canvas>
@@ -39,7 +42,11 @@
 <script src="src/model/variables.js"></script>
 <script src="src/model/parser.js"></script>
 <script src="src/model/evaluator.js"></script>
+
+<script src="src/data.js"></script>
 <script src="src/view.js"></script>
 <script src="src/controller.js"></script>
+<script src="src/learning.js"></script>
+<script src="src/main.js"></script>
 </body>
 </html>

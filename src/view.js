@@ -1,7 +1,9 @@
-// result - или комп.число, или двумерный массив чисел
+const FRACTION_DIGITS = 2; // точность чисел при печати
 
+// result - или комп.число, или двумерный массив чисел
+//
 function beautifyResult(result) {
-   let str = result instanceof Array ? JSON.stringify(result) : result.toString();
+   let str = JSON.stringify(result); 
    // заменяем комп.числа в виде объектов строками:  {"re": 0.5, "im": -1.2} -> "0.5-1.2i"
    let regex = /\{"re":(\-?\d*\.?\d*),"im":(\-?\d*\.?\d*)\}/g;
    str = str.replaceAll(regex, replacer );
@@ -9,27 +11,55 @@ function beautifyResult(result) {
    str = str.replaceAll(",", ", " );
    return str;
  
-   function replacer(s, re, im) {
-     if (re == 0 && im == 0) {
-        return "0";
-     }
-     if (re != 0 && im == 0) {
-        return re.toString();
-     }
-     if (re == 0 && im != 0) {
-        return `${im}i`;
-     }
-     if (im < 0) {
-       if (im == -1) return `${re}-i`;
-       return `${re}-${-im}i`;
-     }
-     if (im == 1) return `${re}+i`;
-     return `${re}+${im}i`;    
-   }
  
 }
 
+function replacer(_, re, im) {
+   re = Number(re).toFixed(FRACTION_DIGITS);
+   im = Number(im).toFixed(FRACTION_DIGITS);
+  
+   if (re == 0 && im == 0) {
+      return "0";
+   }
+   if (re != 0 && im == 0) {
+      return re.toString();
+   }
+   if (re == 0 && im != 0) {
+      return `${im}i`;
+   }
+   if (im < 0) {
+      if (im == -1) return `${re}-i`;
+      return `${re}-${-im}i`;
+   }
+   if (im == 1) return `${re}+i`;
+   return `${re}+${im}i`;    
+}
 
+
+
+function drawValuesItem(i) {
+   function change(c) {
+      let regex = /\{"re":(\-?\d*\.?\d*),"im":(\-?\d*\.?\d*)\}/g;
+      let str = JSON.stringify(c);
+      return str.replace(regex, replacer); 
+   }
+
+   let lvalue = document.getElementById("name"+i).value;
+   let result = values[lvalue];
+   // перед отрисовкой заменяем все комп числа строками:  {"re": 0.5, "im": -1.2} -> "0.5-1.2i"
+  
+   // число
+   if (result instanceof Complex) {
+      result = change(result);
+   } else if (result instanceof Array) {
+      result = result.map(row => row.map(c => change(c)) );  
+   } else {
+      result = "";
+   }
+   draw(result);
+}
+// result - строка или массив строк
+//
 function draw(result) {
    const ctx = canvas.getContext("2d");
    ctx.clearRect(0, 0, canvas.width, canvas.height); 
@@ -39,16 +69,15 @@ function draw(result) {
    
 
    // complex
-   if (result instanceof Complex) {
-      str = result.toString();
-      let x = (canvas.width - ctx.measureText(str).width) / 2;
+   if (typeof result == 'string') {
+      let x = (canvas.width - ctx.measureText(result).width) / 2;
       let y = canvas.height / 2;
-      ctx.fillText(str, x, y); 
+      ctx.fillText(result, x, y); 
       return;
    }
    // matrix
    let maxWidth = result.reduce((a, r) => 
-         Math.max(a, Math.max(...(r.map(c => ctx.measureText(c + "").width)))), 
+         Math.max(a, Math.max(...(r.map(s => ctx.measureText(s).width)))), 
          0);
    let sizeX = result[0].length * 2*D + maxWidth;
    let sizeY = result.length * D;
