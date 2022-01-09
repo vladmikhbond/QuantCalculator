@@ -1,4 +1,4 @@
-// result - или одно комп.число, или двумерный массив чисел
+// result - или комп.число, или двумерный массив чисел
 
 function beautifyResult(result) {
    let str = result instanceof Array ? JSON.stringify(result) : result.toString();

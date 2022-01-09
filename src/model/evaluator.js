@@ -1,11 +1,4 @@
 
-function evalExpr(expr, values) {
-   let lexems = lexical(expr);
-   let poland = toPoland(lexems);
-   let result = evalPoland(poland, ops, values);
-   return result;
-}
-
 function evalPoland(poland, ops, vals) {
    const stack = [];
    for (let lex of poland) {

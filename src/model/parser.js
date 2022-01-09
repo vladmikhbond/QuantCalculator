@@ -1,7 +1,6 @@
 const ERMIT="'", NORM="~", BRA="<", PROB="!", MUL="*", KRON="#", ADD="+", SUB="-", DIRAK="|"  ;
 const OPERATORS = [ERMIT, NORM, BRA, PROB, MUL, KRON, ADD, SUB, DIRAK].join('');
 
-
 //
 function lexical (str) {
    str = str + " stop";
