@@ -1,8 +1,24 @@
 const FRACTION_DIGITS = 2; // точность чисел при печати
 
+function show(equotions) {
+   for (let i = 0; i < equotions.length; i++) 
+   {
+      const info = document.getElementById("info"+i);
+      let str = beautifyResult(equotions[i].value);
+      info.title = str;
+      // обрезаем длину
+      if (str.length > 25) 
+      str = str.slice(0, 25) + "...";
+      info.innerHTML = str;
+   } 
+}
+
+
+
 // result - или комп.число, или двумерный массив чисел
 //
 function beautifyResult(result) {
+   if (!result) return "";
    let str = JSON.stringify(result); 
    // заменяем комп.числа в виде объектов строками:  {"re": 0.5, "im": -1.2} -> "0.5-1.2i"
    let regex = /\{"re":(\-?\d*\.?\d*),"im":(\-?\d*\.?\d*)\}/g;
@@ -10,8 +26,6 @@ function beautifyResult(result) {
    // ставим пробел после запятой
    str = str.replaceAll(",", ", " );
    return str;
- 
- 
 }
 
 function replacer(_, re, im) {
@@ -35,17 +49,14 @@ function replacer(_, re, im) {
    return `${re}+${im}i`;    
 }
 
-
-
-function drawValuesItem(i) {
+function drawValuesItem(i, equotions) {
    function change(c) {
       let regex = /\{"re":(\-?\d*\.?\d*),"im":(\-?\d*\.?\d*)\}/g;
       let str = JSON.stringify(c);
       return str.replace(regex, replacer); 
    }
 
-   let lvalue = document.getElementById("name"+i).value;
-   let result = values[lvalue];
+   let result = equotions[i].value;
    // перед отрисовкой заменяем все комп числа строками:  {"re": 0.5, "im": -1.2} -> "0.5-1.2i"
   
    // число
