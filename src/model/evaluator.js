@@ -6,12 +6,17 @@ function evalExpr(input, values) {
 }
 
 function evalConst(input) {
-   if (input.indexOf(',') != -1 || input.indexOf('/') != -1) {
-      let rows = input.split("/").filter(r => r.trim());
-      let v = rows.map(r => r.split(',').map(x => new Complex(x)));
-      return v; 
-   }   
-   return new Complex(input);       
+   try {
+      if (input.indexOf(',') != -1 || input.indexOf('/') != -1) {
+         let rows = input.split("/").filter(r => r.trim());
+         let v = rows.map(r => r.split(',').map(x => new Complex(x)));
+         return v; 
+      } else {
+         return new Complex(input);   
+      }  
+   } catch {
+      return null;   
+   }    
 }
 
 
@@ -55,17 +60,14 @@ const ops = {
    [DIRAK]: _dirak,
    [KRON]: _kron,
    [NORM]: _norm,
-    //[PROB]: _prob,
+    [PROB]: _prob,
 }
 
-// function _prob(x) {
-//    if (x instanceof Complex)
-//       return x.abs()**2;
-//    if (x instanceof Array) {
-//       return new Matrix(x).normalize().norma;
-//    }
-//    throw new Error("Type error");
-// }
+function _prob(x) {
+   if (x instanceof Complex)
+      return x.abs()**2;
+   throw new Error("Type error");
+}
 
 function _norm(m) {
    return new Matrix(m).normalize().arr;

@@ -8,14 +8,11 @@ class Equotion {
    }
  
    calc(values) {
-     const isTerm = line => /\d/.test(line);
- 
-     if (!this.left || !this.right) 
-        return;
-     if (isTerm(this.right)) {
-       return evalConst(this.right);
-     } 
-     return evalExpr(this.right, values); 
+     let res = evalConst(this.right);
+     if (!res) {
+        res = evalExpr(this.right, values); 
+     }
+     return res;
    }
       
  }

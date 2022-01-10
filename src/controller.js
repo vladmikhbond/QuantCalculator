@@ -11,7 +11,8 @@ let equotions;
 function refresh() 
 {  
   equotions = makeEquotions();
-  show(equotions);      
+  show(equotions); 
+  save(equotions);    
 }
 
 function makeEquotions() 
@@ -29,6 +30,15 @@ function makeEquotions()
   return equotions;
 }
 
+function save(es) {
+  let line = ""
+  for (let i = 0; i < es.length; i++) {
+    line += `${es[i].left} = ${es[i].right}\n`;
+  }
+  let $saved = document.getElementById("saved")
+  $saved.value = line;
+  $saved.rows = line.split("\n").length;
+}
 
 //=====================================================
 

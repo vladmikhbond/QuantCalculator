@@ -1,10 +1,10 @@
-const ERMIT="'", NORM="~", BRA="<", PROB="!", MUL="*", KRON="#", ADD="+", SUB="-", DIRAK="|"  ;
+const ERMIT="'", NORM="~", BRA="<", PROB="^", MUL="*", KRON="#", ADD="+", SUB="-", DIRAK="|"  ;
 const OPERATORS = [ERMIT, NORM, BRA, PROB, MUL, KRON, ADD, SUB, DIRAK].join('');
 
 //
 function lexical (str) {
    str = str + " stop";
-   let regExForName = /[\wαβγδεζηθικλμνξοπρςστυφχψω_]+/g;
+   let regExForName = /[\wα-ω_][\wα-ω_\d]*/g;
    let matches = [...regExForName[Symbol.matchAll](str)];
    let gap0 = str.slice(0, matches[0].index);
    let result = gap0.split('').filter(c => c != ' ');
