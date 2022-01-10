@@ -1,3 +1,26 @@
+class Equotion {
+  constructor(idx, lvalue, rvalue, values) {
+    this.idx = idx;
+    this.left = lvalue;
+    this.right = rvalue;
+    this.value = calc(values);
+    values[this.left] = this.value;
+  }
+
+  calc(values) {
+    const isTerm = line => 
+        /\d/.test(line);
+
+    if (!this.left || !this.right) 
+       return;
+    if (isTerm(this.right)) {
+      return evalConst(this.right);
+    } 
+    return evalExpr(this.right, values); 
+  }
+
+     
+}
 
 let $parent = document.getElementById('parent');
 
@@ -9,7 +32,6 @@ const values = new Map();
 function refresh() 
 {
   const isTerm = line => /\d/.test(line);
-  
   values.clear();
   for (let i = 0; ; i++) {
     if (!document.getElementById("name"+i))
@@ -17,6 +39,8 @@ function refresh()
     let lvalue = document.getElementById("name"+i).value.trim();
     let rvalue = document.getElementById("value"+i).value.trim();
     let info = document.getElementById("info"+i);
+    
+
 
     if (lvalue && rvalue) {
       if (isTerm(rvalue)) {
