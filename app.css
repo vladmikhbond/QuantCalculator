@@ -2,14 +2,17 @@
    margin-bottom: 6px;
 }
 .v1 {
-   width: 75px;
+   width: 75px; 
+   height: 25px
 }
 .v2 {
    font: 1em  arial; font-weight: 500;
 }
 .v3 {
    width: 250px;
+   height: 25px
 }
 .v4 {
+   color:gray;
    width: 250px;
 }

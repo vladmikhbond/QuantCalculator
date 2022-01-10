@@ -4,8 +4,9 @@ let $parent = document.getElementById('parent');
 btnGo.addEventListener('click',  refresh);
 btnAdd.addEventListener('click', addDiv);
 btnRemove.addEventListener('click',  removeDiv);
+btnClear.addEventListener('click',  removeAllDivs);
 
-let equotions = null;
+let equotions;
 
 function refresh() 
 {  
@@ -32,7 +33,11 @@ function makeEquotions()
 //=====================================================
 
 function removeDiv() {
-   $parent.lastChild.remove();
+  $parent.lastChild.remove();
+}
+function removeAllDivs() {
+  $parent.innerHTML = "";
+  setTimeout(addDiv, 100);
 }
 
 function addDiv() {
