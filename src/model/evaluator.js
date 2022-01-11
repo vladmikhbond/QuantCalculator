@@ -20,33 +20,44 @@ function evalConst(input) {
 }
 
 
-function evalPoland(poland, ops, vals) {
-   const stack = [];
-   for (let lex of poland) {
-      switch(lex) {
-         // unaries
-         case ERMIT: case NORM: case BRA: case PROB:
-         let c = stack.pop();
-         if (!c) throw new Error("wrong poland expression 1 ")
-         let op1 = ops[lex];
-         stack.push(op1(c)); 
-         break;
-         // binaries
-         case ADD: case SUB:case MUL: case DIRAK: case KRON: 
-         let c2 = stack.pop();
-         let c1 = stack.pop();
-         if (!c1 || !c2) throw new Error("wrong poland expression 2")
-         let op2 = ops[lex];
-         stack.push(op2(c1, c2)); 
-         break;
+function evalPoland(poland, ops, vals) 
+{
+   poland.forEach(lex => {
+      if (lex.k == 'n') 
+      {
+         lex.v = vals[lex.v];
+         if (!lex.v) 
+             throw new Error("wrong poland expression V");
+      } 
+      else if (lex.k == 'c') 
+      {
+         lex.v = new Complex(lex.v);      
+      }
+   })
 
-         default:
-            if (!vals[lex]) throw new Error("wrong poland expression V")
-            stack.push(vals[lex]);
-      }      
+   const vStack = []; // в стеке только значения
+   for (let lex of poland) {
+      if (lex.isUnaryOp) 
+      {
+         let v = vStack.pop();
+         if (!v) throw new Error("wrong poland expression 1 ")
+         let unaryOp = ops[lex.v];
+         vStack.push(unaryOp(v)); 
+      } 
+      else if (lex.isBinaryOp) 
+      {
+         let v2 = vStack.pop();
+         let v1 = vStack.pop();
+         if (!v1 || !v2) throw new Error("wrong poland expression 2")
+         let binaryOp = ops[lex.v];
+         vStack.push(binaryOp(v1, v2)); 
+      }
+      else {         
+         vStack.push(lex.v);
+      }
    }
           
-   return stack[0];
+   return vStack[0];
 }
 
 
@@ -136,8 +147,6 @@ function _mul(x, y) {
    throw new Error("Type error");
 }
 
-
-
 // <x|y> - скалярное произведение 
 // x>|y> - тензорное произведение 
 // <x|c , c|y>  - умножение вектора на число c
@@ -179,31 +188,31 @@ function _kron(x, y) {
 
 //========================= TEST ===============================
 
-// function complexArrayEquals(a1, a2) {
-//    if (a1 instanceof Complex) {
-//       return a1.equals(new Complex(a2)); 
-//    } 
-//    return a1.every((x, i) => complexArrayEquals(x, a2[i]));
-// }   
+function complexArrayEquals(a1, a2) {
+   if (a1 instanceof Complex) {
+      return a1.equals(new Complex(a2)); 
+   } 
+   return a1.every((x, i) => complexArrayEquals(x, a2[i]));
+}   
 
-// function assign(input, expected, values) {
-//    let lexems = lexical(input);
-//    let poland = toPoland(lexems);
-//    let res = evalPoland(poland, ops, values);
-//    return complexArrayEquals(res, expected);
-// }
+function assign(input, expected, values) {
+   let lexems = lexical(input);
+   let poland = toPoland(lexems);
+   let res = evalPoland(poland, ops, values);
+   return complexArrayEquals(res, expected);
+}
 
-// console.log("evaluator tests");
-// console.log(assign("e1'", [[1,2]], {"e1": [[1],[2]]}))
-// console.log(assign("<e1", [[1,2]], {"e1": [[1],[2]]}))
-// console.log(assign("e1''", [[1,2]], {"e1": [[1,2]]}))
-// console.log(assign("e1'", new Complex(1, 2), {"e1": new Complex(1, -2)}))
-// console.log(assign("e1+e1", [[2,4]], {"e1": [[1,2]]}))
-// console.log(assign("e1-e1>", [[0,0]], {"e1": [[1,2]]}))
-// console.log(assign("e1>*e1>'", [[5]], {"e1": [[1,2]]}))
-// console.log(assign("A*e1>",  [[1],[2]], {"e1": [[1],[2]], "A": [[1,0], [0,1]]}))
-// console.log(assign("A|e1>",  [[1],[2]], {"e1": [[1],[2]], "A": [[1,0], [0,1]]}))
-// console.log(assign("c|e1>",  [[1],[2]], {"e1": [[1],[2]], "c": new Complex(1)}))
-// console.log(assign("<x|y>",  5, {"x": [[1], [2]], "y": [[1],[2]]}))
-// console.log(assign("<x|I|y>",  5, {"x": [[1], [2]], "y": [[1],[2]], "I": [[1,0], [0,1]] }))
-// console.log(assign("<u|l>",  0.7, {"u": [[1], [0]], "l": [[0.7],[0.7]] }))
+console.log("evaluator tests");
+console.log(assign("e1'", [[1,2]], {"e1": [[1],[2]]}))
+console.log(assign("<e1", [[1,2]], {"e1": [[1],[2]]}))
+console.log(assign("e1''", [[1,2]], {"e1": [[1,2]]}))
+console.log(assign("e1'", new Complex(1, 2), {"e1": new Complex(1, -2)}))
+console.log(assign("e1+e1", [[2,4]], {"e1": [[1,2]]}))
+console.log(assign("e1-e1>", [[0,0]], {"e1": [[1,2]]}))
+console.log(assign("e1>*e1>'", [[5]], {"e1": [[1,2]]}))
+console.log(assign("A*e1>",  [[1],[2]], {"e1": [[1],[2]], "A": [[1,0], [0,1]]}))
+console.log(assign("A|e1>",  [[1],[2]], {"e1": [[1],[2]], "A": [[1,0], [0,1]]}))
+console.log(assign("c|e1>",  [[1],[2]], {"e1": [[1],[2]], "c": new Complex(1)}))
+console.log(assign("<x|y>",  5, {"x": [[1], [2]], "y": [[1],[2]]}))
+console.log(assign("<x|I|y>",  5, {"x": [[1], [2]], "y": [[1],[2]], "I": [[1,0], [0,1]] }))
+console.log(assign("<u|l>",  0.7, {"u": [[1], [0]], "l": [[0.7],[0.7]] }))

@@ -1,11 +1,38 @@
 const ERMIT="'", NORM="~", BRA="<", PROB="^", MUL="*", KRON="#", ADD="+", SUB="-", DIRAK="|"  ;
-const OPERATORS = [ERMIT, NORM, BRA, PROB, MUL, KRON, ADD, SUB, DIRAK].join('');
+const OPERATORS = "'~<^*#+-|";
+const UNARY = "'~<^";
+const BINARY = "*#+-|";
 
+class Lex {
+    constructor(k, v) {
+        this.k = k;   // u`nary b`inary n`ame, c`omplex, '(', ')'
+        this.v = v;
+    }
+
+    get isOperatorOrBracked() {
+        return "ub()".includes(this.k)
+    }
+
+    get isCloseBracked() {
+        return this.k == ')';
+    }
+
+    get isUnaryOp() {
+        return this.k == 'u';
+    }
+    
+    get isBinaryOp() {
+        return this.k == 'b';
+    }
+}
+
+
+// В именах не исп букву 'i'
+// Комп числа писать в скобках (1i) (2+3i), перед i всегда число
 //
 function lexical (inputStr) {
    // remove spaces
    let str = [...inputStr].filter(c => c != ' ').join(''); 
-   str.replace(/i/g, '\1');
 
    const regName = /[A-Za-hj-zα-ω_][A-Za-hj-zα-ω_\d]*/g;    
    let matches1 = [...regName[Symbol.matchAll](str)];
@@ -15,29 +42,33 @@ function lexical (inputStr) {
    let matches2 = [...regComplex[Symbol.matchAll](str)];
    str = str.replace(regComplex, 'c');
    
-   let result = [...str];
-   if (matches1.length) {
-        let i = 0;
-        result = result.map(c => c == 'n' ? matches1[i++][0] : c);
-    }
-    if (matches2.length) {
-        let j = 0;
-        result = result.map(c => c == 'c' ? matches2[j++][0] : c);
-    }
+   let result = [], i1 = 0, i2 = 0; 
+   for (let c of str) {
+      if (UNARY.includes(c)) 
+         result.push(new Lex('u', c));
+      else if (BINARY.includes(c)) 
+         result.push(new Lex('b', c));   
+      else if (c == 'n') 
+         result.push(new Lex('n', matches1[i1++][0]));  
+      else if (c == 'c') 
+         result.push(new Lex('c', matches2[i2++][0]));
+      else if (c == '(' || c == ')') 
+         result.push(new Lex(c, c));         
+   } 
    return result;
 }
 
-// [string] => [string]
+// toPoland:: [Lex] -> [Lex]
 //
-function toPoland(input) {
-   const isBracketOrOperator = x => (OPERATORS+"()").indexOf(x) > -1;
-   
+function toPoland(input) 
+{   
    let output = [], stack = [];
    for (let lex of input) {
-       let p = getPriority(lex);
-       if (isBracketOrOperator(lex)) 
+       
+       if (lex.isOperatorOrBracked) 
        {
-           if (lex == ')') 
+           let p = getPriority(lex.v);
+           if (lex.isCloseBracked) 
            {
                while (priorityInTop(stack) != 0 ) {
                    output.push(stack.pop());
@@ -56,9 +87,7 @@ function toPoland(input) {
                stack.push(lex);
            }          
        } 
-       else if (lex == '>') {
-           // do nothing
-       } else 
+       else 
        {
           output.push(lex);
        }       
@@ -83,18 +112,18 @@ function getPriority(op) {
 function priorityInTop(stack) {
    if (stack.length == 0) 
        return -1;
-   return getPriority(stack[stack.length - 1]);
+   return getPriority(stack[stack.length - 1].v);
 }
-
 
 //===================== TEST ================================
 function assert(input, expected ) {
    let answer = lexical(input);
-   answer = toPoland(answer).join('');
+   answer = toPoland(answer).map(l => l.v).join('');
+
    return answer == expected;
 }
 console.log("parser tests");
-console.log(assert("<a1+(2+3i)|a2-(3+4i)>", "a1<2+3i+a23+4i+|"));
+console.log(assert("<a1+(2+3i)|a2-(3+4i)>", "a1<2+3i+a23+4i-|"));
 console.log(assert("<a1+b1|a2+b2>", "a1<b1+a2b2+|"));
 console.log(assert("<(a+b)|(c+d)>", "ab+<cd+|"));
 console.log(assert("(<a)+b|c+d>", "a<b+cd+|"));
