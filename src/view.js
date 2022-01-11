@@ -49,12 +49,16 @@ function replacer(_, re, im) {
    return `${re}+${im}i`;    
 }
 
-function drawValuesItem(i, equotions) {
+function drawValuesItem(i, equotions) 
+{
    function change(c) {
       let regex = /\{"re":(\-?\d*\.?\d*),"im":(\-?\d*\.?\d*)\}/g;
       let str = JSON.stringify(c);
       return str.replace(regex, replacer); 
    }
+
+   if (!equotions || !equotions[i]) 
+      return;
 
    let result = equotions[i].value;
    // перед отрисовкой заменяем все комп числа строками:  {"re": 0.5, "im": -1.2} -> "0.5-1.2i"

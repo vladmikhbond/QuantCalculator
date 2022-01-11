@@ -2,22 +2,28 @@ const ERMIT="'", NORM="~", BRA="<", PROB="^", MUL="*", KRON="#", ADD="+", SUB="-
 const OPERATORS = [ERMIT, NORM, BRA, PROB, MUL, KRON, ADD, SUB, DIRAK].join('');
 
 //
-function lexical (str) {
-   str = str + " stop";
-   let regExForName = /[\wα-ω_][\wα-ω_\d]*/g;
-   let matches = [...regExForName[Symbol.matchAll](str)];
-   let gap0 = str.slice(0, matches[0].index);
-   let result = gap0.split('').filter(c => c != ' ');
-   for (let i = 0; i < matches.length - 1; i++) {
-      let m = matches[i], n = matches[i+1];
-      let start = m.index + m[0].length;
+function lexical (inputStr) {
+   // remove spaces
+   let str = [...inputStr].filter(c => c != ' ').join(''); 
+   str.replace(/i/g, '\1');
 
-      let gap = str.slice(start, n.index);
-      let cs = gap.split('').filter(c => c != ' ');
-      
-      result.push(m[0]);
-      result.push(...cs);
-   }
+   const regName = /[A-Za-hj-zα-ω_][A-Za-hj-zα-ω_\d]*/g;    
+   let matches1 = [...regName[Symbol.matchAll](str)];
+   str = str.replace(regName, 'n');
+
+   const regComplex = /([\+-]?[\d]+(\.)?[\d]*)(([\+-]([\d]+\.)?[\d]*)?i)?/g;
+   let matches2 = [...regComplex[Symbol.matchAll](str)];
+   str = str.replace(regComplex, 'c');
+   
+   let result = [...str];
+   if (matches1.length) {
+        let i = 0;
+        result = result.map(c => c == 'n' ? matches1[i++][0] : c);
+    }
+    if (matches2.length) {
+        let j = 0;
+        result = result.map(c => c == 'c' ? matches2[j++][0] : c);
+    }
    return result;
 }
 
@@ -50,7 +56,9 @@ function toPoland(input) {
                stack.push(lex);
            }          
        } 
-       else if (lex != '>') 
+       else if (lex == '>') {
+           // do nothing
+       } else 
        {
           output.push(lex);
        }       
@@ -80,13 +88,14 @@ function priorityInTop(stack) {
 
 
 //===================== TEST ================================
-function assert(input, exp ) {
-   let ans = lexical(input);
-   ans = toPoland(ans).join('');
-   return ans == exp;
+function assert(input, expected ) {
+   let answer = lexical(input);
+   answer = toPoland(answer).join('');
+   return answer == expected;
 }
 console.log("parser tests");
-console.log(assert("<a+b|c+d>", "a<b+cd+|"));
+console.log(assert("<a1+(2+3i)|a2-(3+4i)>", "a1<2+3i+a23+4i+|"));
+console.log(assert("<a1+b1|a2+b2>", "a1<b1+a2b2+|"));
 console.log(assert("<(a+b)|(c+d)>", "ab+<cd+|"));
 console.log(assert("(<a)+b|c+d>", "a<b+cd+|"));
 console.log(assert("<a|b|c>", "a<b|c|"));

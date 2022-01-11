@@ -1,4 +1,3 @@
-
 function makeLearningButtons() {
     for (let partIdx = 0; partIdx < DATA.length; partIdx++) {
         let btn = document.createElement("button");
@@ -19,7 +18,7 @@ function switchTo(partIdx)
         '<span class="sectionLink" onclick="switchToPartSection('+ partIdx +',\'$1\')">$2</span>');
     cardText.innerHTML = dataT;
     createDivsFromData(DATA[partIdx].a);
-    STATE = partIdx-1;
+    LEARNING_STATE = partIdx-1;
     refresh();
 }
 

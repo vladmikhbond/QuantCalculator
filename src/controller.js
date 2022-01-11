@@ -1,5 +1,4 @@
 
-let $parent = document.getElementById('parent');
 
 btnGo.addEventListener('click',  refresh);
 btnAdd.addEventListener('click', addDiv);
@@ -10,15 +9,17 @@ let equotions;
 
 function refresh() 
 {  
-  equotions = makeEquotions();
+  makeEquotions();
   show(equotions); 
-  save(equotions);    
+  saveEquotions();    
 }
+
+// -------------------- equotions suit ------------------------
 
 function makeEquotions() 
 {
   const values = new Map();
-  let equotions = [];
+  equotions = [];
   for (let i = 0; ; i++) {
     if (!document.getElementById("name"+i))
         break;
@@ -27,28 +28,29 @@ function makeEquotions()
     let eq = new Equotion(i, lvalue, rvalue, values);
     equotions.push(eq);
   }
-  return equotions;
 }
 
-function save(es) {
-  let line = ""
-  for (let i = 0; i < es.length; i++) {
-    line += `${es[i].left} = ${es[i].right}\n`;
-  }
-  let $saved = document.getElementById("saved")
-  $saved.value = line;
-  $saved.rows = line.split("\n").length;
+function saveEquotions() {
+  let lines = equotions.map(e => `${e.left} = ${e.right}`)
+  $saved.value = lines.join('\n');
+  $saved.rows = lines.length;
 }
 
-//=====================================================
+// -------------------- divs suit ------------------------
 
 function removeDiv() {
   $parent.lastChild.remove();
 }
+
+
 function removeAllDivs() {
   $parent.innerHTML = "";
   setTimeout(addDiv, 100);
+  $saved.value = "";
+  $saved.rows = 1;
+  equotions = [];
 }
+
 
 function addDiv() {
   let i = $parent.childElementCount;
