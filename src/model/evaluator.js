@@ -56,7 +56,9 @@ function evalPoland(poland, ops, vals)
          vStack.push(lex.v);
       }
    }
-          
+   if (vStack.length != 1) 
+      throw new Error("wrong poland expression 3") 
+
    return vStack[0];
 }
 
@@ -100,16 +102,20 @@ function _ermit(x) {
 
 // c+c->c,  a+c->a, c+a->a, a+a->a     // a - array, c - complex
 function _add(x, y) {
-   // c+c->c
+   // c+c -> c
    if (x instanceof Complex && y instanceof Complex) {
       return x.add(y);
    }
-   // c+a = a+c
+   // c+a -> c
    if (x instanceof Complex && y instanceof Array) {
-      [x, y] = [y, x];
+      return new Matrix(y).add(x).arr;
    }
-   // a+c->a, a+a->a 
-   if (x instanceof Array) {
+   // a+c -> a
+   if (x instanceof Array && y instanceof Complex) {
+      return new Matrix(x).add(y).arr;
+   }
+   // a+a->a 
+   if (x instanceof Array && y instanceof Array) {
       return new Matrix(x).add(new Matrix(y)).arr;
    }
    throw new Error("Type error");
@@ -203,6 +209,9 @@ function assign(input, expected, values) {
 }
 
 console.log("evaluator tests");
+
+console.log(assign("x + (2i)", [[new Complex(1,2), new Complex(2,2)]], {"x": [[1,2]]}))
+
 console.log(assign("e1'", [[1,2]], {"e1": [[1],[2]]}))
 console.log(assign("<e1", [[1,2]], {"e1": [[1],[2]]}))
 console.log(assign("e1''", [[1,2]], {"e1": [[1,2]]}))

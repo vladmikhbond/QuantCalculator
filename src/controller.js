@@ -8,10 +8,13 @@ btnClear.addEventListener('click',  removeAllDivs);
 let equotions;
 
 function refresh() 
-{  
-  makeEquotions();
-  show(equotions); 
-  saveEquotions();    
+{ try {
+    makeEquotions();
+    show(equotions); 
+    saveEquotions();    
+  } catch (e) {
+    alert(e);
+  }
 }
 
 // -------------------- equotions suit ------------------------
@@ -25,8 +28,10 @@ function makeEquotions()
         break;
     let lvalue = document.getElementById("name"+i).value.trim();
     let rvalue = document.getElementById("value"+i).value.trim();
-    let eq = new Equotion(i, lvalue, rvalue, values);
-    equotions.push(eq);
+    if (lvalue != "" && rvalue != "") {
+      let eq = new Equotion(i, lvalue, rvalue, values);
+      equotions.push(eq);
+    }
   }
 }
 

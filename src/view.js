@@ -4,11 +4,17 @@ function show(equotions) {
    for (let i = 0; i < equotions.length; i++) 
    {
       const info = document.getElementById("info"+i);
+      if (equotions[i].error) {
+         info.style.color = 'red';
+         info.innerHTML = equotions[i].error.message;
+         continue;
+      } 
       let str = beautifyResult(equotions[i].value);
       info.title = str;
       // обрезаем длину
       if (str.length > 25) 
       str = str.slice(0, 25) + "...";
+      info.style.color = 'gray';
       info.innerHTML = str;
    } 
 }
