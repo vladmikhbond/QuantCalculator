@@ -87,10 +87,6 @@ class Matrix
       return arr[0][0];  
    }
 
-
-   
-   // |a><b|- тензор
-
    // норма
    get norma() {
       let sum = this.arr.reduce((a, r) => a + r.reduce( 

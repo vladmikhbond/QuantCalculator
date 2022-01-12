@@ -37,11 +37,11 @@ function evalExpr(rvalue, dict) {
 function evalConst(rvalue) {
    rvalue = rvalue.trim();
    switch(rvalue[0]) {
-      case "|":          // ket
+      case ">": case "|":  // ket
          rvalue = rvalue.slice(1).trim();
          let ket = rvalue.split(' ').filter(x => x.trim() != "");
          return new Matrix(ket.map(x => [x])).normalize().arr;
-      case "<":          // bra
+      case "<":            // bra
          rvalue = rvalue.slice(1).trim();
          let bra = rvalue.split(' ').filter(x => x.trim() != "");
          return new Matrix([bra]).normalize().arr;

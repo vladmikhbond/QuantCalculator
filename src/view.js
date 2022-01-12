@@ -86,8 +86,7 @@ function draw(result) {
    ctx.clearRect(0, 0, canvas.width, canvas.height); 
    ctx.font = '20px arial';
    ctx.textAlign = "right";
-   const D = 20;
-   
+   const D = 30;
 
    // complex
    if (typeof result == 'string') {
@@ -100,7 +99,7 @@ function draw(result) {
    let maxWidth = result.reduce((a, r) => 
          Math.max(a, Math.max(...(r.map(s => ctx.measureText(s).width)))), 
          0);
-   let sizeX = result[0].length * 2*D + maxWidth;
+   let sizeX = result[0].length * D + maxWidth;
    let sizeY = result.length * D;
    let left = (canvas.width - sizeX) / 2;
    let top = (canvas.height - sizeY) / 2;
@@ -110,7 +109,7 @@ function draw(result) {
       x = left;
       for (let c of row) {
          ctx.fillText(c.toString(), x, y); 
-         x += 2*D + maxWidth;        
+         x += D + maxWidth;        
       } 
       y += D;
    }
