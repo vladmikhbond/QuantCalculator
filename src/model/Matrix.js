@@ -1,6 +1,7 @@
 // [[1,2], [3,4]];   [[1,2]] - 1 row; [[1], [2]] - 1 column   
 class Matrix 
 {
+   // arr - массив строк, содержащих комп числа
    constructor(arr) {
       let valid = arr.every(row => row.length == arr[0].length);
       if (!valid) throw Error("invalid matrix")

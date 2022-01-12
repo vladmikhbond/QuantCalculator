@@ -24,6 +24,10 @@ class Lex {
     get isBinaryOp() {
         return this.k == 'b';
     }
+
+    get isName() {
+        return this.k == 'n';
+    }
 }
 
 

@@ -21,7 +21,7 @@ function refresh()
 
 function makeEquotions() 
 {
-  const values = new Map();
+  const dict = new Map();
   equotions = [];
   for (let i = 0; ; i++) {
     if (!document.getElementById("name"+i))
@@ -29,7 +29,7 @@ function makeEquotions()
     let lvalue = document.getElementById("name"+i).value.trim();
     let rvalue = document.getElementById("value"+i).value.trim();
     if (lvalue != "" && rvalue != "") {
-      let eq = new Equotion(i, lvalue, rvalue, values);
+      let eq = new Equotion(i, lvalue, rvalue, dict);
       equotions.push(eq);
     }
   }

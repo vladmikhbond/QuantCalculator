@@ -1,22 +1,65 @@
-function evalExpr(input, values) {
-   let lexems = lexical(input);
-   let poland = toPoland(lexems);
-   let result = evalPoland(poland, ops, values);
-   return result;
+class Equotion {
+   constructor(idx, lvalue, rvalue, dict) {
+     this.idx = idx;
+     this.left = lvalue;
+     this.right = rvalue;
+     try {
+       this.value = evalExpr(this.right, dict);
+       dict[this.left] = this.value;
+     } catch (error) {
+       this.error = error;
+     }  
+   }
+   
+  }
+  
+
+// evalExpr:: string -> dict -> (Array Complex | Complex)
+//
+function evalExpr(rvalue, dict) {
+   let lexemas = lexical(rvalue); 
+   if (lexemas.some(lex => lex.isName)) {
+      let poland = toPoland(lexemas);
+      return evalPoland(poland, ops, dict);
+   } else {
+      return evalConst(rvalue);
+   }
 }
 
-function evalConst(input) {
-   try {
-      if (input.indexOf(',') != -1 || input.indexOf('/') != -1) {
-         let rows = input.split("/").filter(r => r.trim());
-         let v = rows.map(r => r.split(',').map(x => new Complex(x)));
-         return v; 
-      } else {
-         return new Complex(input);   
-      }  
-   } catch {
-      return null;   
-   }    
+// все числа пишутся без пробелов
+// | 11 22 33    - кет вектор нормированный (начин. с |)   |0 1>
+// < 11 22 32   - бра вектор нормированный (начин. с <)
+// 11 22 33 / 44 55 66 - матрица (есть пробелы?)
+// 11+22i - комп число (нет пробелов?)  
+//
+// evalConst:: string -> (Array Complex | Complex)
+//
+function evalConst(rvalue) {
+   rvalue = rvalue.trim();
+   switch(rvalue[0]) {
+      case "|":          // ket
+         rvalue = rvalue.slice(1).trim();
+         let ket = rvalue.split(' ').filter(x => x.trim() != "");
+         return new Matrix(ket.map(x => [x])).normalize().arr;
+      case "<":          // bra
+         rvalue = rvalue.slice(1).trim();
+         let bra = rvalue.split(' ').filter(x => x.trim() != "");
+         return new Matrix([bra]).normalize().arr;
+      default:          
+         if (rvalue.indexOf(' ') > 0) // matrix
+         {
+            let rows = rvalue.split("/").filter(r => r.trim());
+            let v = rows.map(r => r.split(' ')
+               .map(x => x.trim())
+               .filter(x => x != "")
+               .map(x => new Complex(x)));
+            return v;
+         } 
+         else                         // complex      
+         {
+            return new Complex(rvalue);
+         }          
+   }  
 }
 
 
@@ -208,10 +251,19 @@ function assign(input, expected, values) {
    return complexArrayEquals(res, expected);
 }
 
+function assign2(input, expected) {
+   let res = evalConst(input);
+   return complexArrayEquals(res, expected);
+}
+
 console.log("evaluator tests");
 
-console.log(assign("x + (2i)", [[new Complex(1,2), new Complex(2,2)]], {"x": [[1,2]]}))
+console.log(assign2("< 0 1 ", [[new Complex(0), new Complex(1)]]));
+console.log(assign2("| 0 1 ", [[new Complex(0)], [new Complex(1)]]));
+console.log(assign2("10 / 20 ", [[new Complex(10)], [new Complex(20)]]));
+console.log(assign2("| 3 4 ", [[new Complex(0.6)], [new Complex(0.8)]]));
 
+console.log(assign("x + (2i)", [[new Complex(1,2), new Complex(2,2)]], {"x": [[1,2]]}))
 console.log(assign("e1'", [[1,2]], {"e1": [[1],[2]]}))
 console.log(assign("<e1", [[1,2]], {"e1": [[1],[2]]}))
 console.log(assign("e1''", [[1,2]], {"e1": [[1,2]]}))
