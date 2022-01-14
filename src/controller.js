@@ -2,6 +2,7 @@ btnGo.addEventListener('click',  refresh);
 btnAdd.addEventListener('click', () => addDiv());
 btnRemove.addEventListener('click',  removeDiv);
 btnClear.addEventListener('click',  removeAllDivs);
+btnLoad.addEventListener('click',  () => createDivsFromData(saved.value));
 
 let equotions;
 
