@@ -3,6 +3,10 @@ class Equotion {
      this.idx = idx;
      this.left = lvalue;
      this.right = rvalue;
+     if (lvalue == "" || rvalue == "") {
+        this.error = new Error("n/a");
+        return;
+     }
      try {
        this.value = evalExpr(this.right, dict);
        dict[this.left] = this.value;

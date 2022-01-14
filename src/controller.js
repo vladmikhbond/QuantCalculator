@@ -1,5 +1,3 @@
-
-
 btnGo.addEventListener('click',  refresh);
 btnAdd.addEventListener('click', addDiv);
 btnRemove.addEventListener('click',  removeDiv);
@@ -7,8 +5,8 @@ btnClear.addEventListener('click',  removeAllDivs);
 
 let equotions;
 
-function refresh() 
-{ try {
+function refresh() { 
+  try {
     makeEquotions();
     show(equotions); 
     saveEquotions();    
@@ -27,11 +25,9 @@ function makeEquotions()
     if (!document.getElementById("name"+i))
         break;
     let lvalue = document.getElementById("name"+i).value.trim();
-    let rvalue = document.getElementById("value"+i).value.trim();
-    if (lvalue != "" && rvalue != "") {
-      let eq = new Equotion(i, lvalue, rvalue, dict);
-      equotions.push(eq);
-    }
+    let rvalue = document.getElementById("value"+i).value.trim();    
+    let eq = new Equotion(i, lvalue, rvalue, dict);
+    equotions.push(eq);
   }
 }
 

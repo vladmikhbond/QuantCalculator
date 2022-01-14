@@ -84,9 +84,9 @@ function drawValuesItem(i, equotions)
 function draw(result) {
    const ctx = canvas.getContext("2d");
    ctx.clearRect(0, 0, canvas.width, canvas.height); 
-   ctx.font = '20px arial';
+   ctx.font = '16px arial';
    ctx.textAlign = "right";
-   const D = 30;
+   const D = 24;
 
    // complex
    if (typeof result == 'string') {
@@ -99,7 +99,7 @@ function draw(result) {
    let maxWidth = result.reduce((a, r) => 
          Math.max(a, Math.max(...(r.map(s => ctx.measureText(s).width)))), 
          0);
-   let sizeX = result[0].length * D + maxWidth;
+   let sizeX = result[0].length * D/2 + maxWidth;
    let sizeY = result.length * D;
    let left = (canvas.width - sizeX) / 2;
    let top = (canvas.height - sizeY) / 2;
