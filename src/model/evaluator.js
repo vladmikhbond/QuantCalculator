@@ -125,7 +125,7 @@ const ops = {
 
 function _prob(x) {
    if (x instanceof Complex)
-      return x.abs()**2;
+      return new Complex(x.abs()**2);
    throw new Error("Type error");
 }
 

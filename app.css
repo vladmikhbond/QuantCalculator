@@ -16,3 +16,11 @@
    color:gray;
    width: 250px;
 }
+.nav-link {
+   display: inline;
+   
+}
+#cardText {
+   white-space:break-spaces;
+   font-family: 'Courier New', Courier, monospace;
+}

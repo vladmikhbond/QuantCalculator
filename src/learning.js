@@ -15,7 +15,7 @@ function switchTo(partIdx)
 {
     cardTitle.innerHTML = DATA[partIdx].h;
     let dataT = DATA[partIdx].t.replace( /<<(.):(.*)>>/g,
-        '<span class="sectionLink" onclick="switchToPartSection('+ partIdx +',\'$1\')">$2</span>');
+        '<span class="nav-link" onclick="switchToPartSection('+ partIdx +',\'$1\')">$2</span>');
     cardText.innerHTML = dataT;
     createDivsFromData(DATA[partIdx].a);
     LEARNING_STATE = partIdx-1;
