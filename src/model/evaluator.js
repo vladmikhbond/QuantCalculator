@@ -31,8 +31,8 @@ function evalExpr(rvalue, dict) {
 }
 
 // все числа пишутся без пробелов
-// | 11 22 33    - кет вектор нормированный (начин. с |)   |0 1>
-// < 11 22 32   - бра вектор нормированный (начин. с <)
+// > 11 22 33    - кет-вектор нормированный (начин. с > или |)   |0 1>
+// < 11 22 32   - бра-вектор нормированный (начин. с <)
 // 11 22 33 / 44 55 66 - матрица (есть пробелы?)
 // 11+22i - комп число (нет пробелов?)  
 //
@@ -109,7 +109,6 @@ function evalPoland(poland, ops, vals)
    return vStack[0];
 }
 
-
 const ops = {
    //[CONJ]: _conj,
    [ERMIT]: _ermit,
@@ -123,18 +122,31 @@ const ops = {
     [PROB]: _prob,
 }
 
+function _error(x) {
+   if (x) throw new Error(`Wrong type of ${x}.`);
+   throw new Error(`Wrong type.`);
+}
+
 function _prob(x) {
-   if (x instanceof Complex)
+   if (x instanceof Complex) {
       return new Complex(x.abs()**2);
-   throw new Error("Type error");
+   }
+   _error(x);
 }
 
-function _norm(m) {
-   return new Matrix(m).normalize().arr;
+function _norm(x) {
+   let m = new Matrix(x);
+   if (m.isBra || m.isKet) {
+      return m.normalize().arr;
+   }
+   _error(x);
 }
 
-function _conj(com) {
-   return com.conjugate();
+function _conj(x) {
+   if (x instanceof Complex) {
+      return x.conjugate();
+   }
+   _error(x);
 }
 
 function _ermit(x) {
@@ -144,7 +156,7 @@ function _ermit(x) {
    if (x instanceof Complex) {
        return x.conjugate();
    }
-   throw new Error("Type error");
+   _error(x);
 }
 
 // c+c->c,  a+c->a, c+a->a, a+a->a     // a - array, c - complex
@@ -165,7 +177,7 @@ function _add(x, y) {
    if (x instanceof Array && y instanceof Array) {
       return new Matrix(x).add(new Matrix(y)).arr;
    }
-   throw new Error("Type error");
+   _error();
 }
 
 function _sub(x, y) {
@@ -197,7 +209,7 @@ function _mul(x, y) {
    if (x instanceof Array) {
       return new Matrix(x).mul(new Matrix(y)).arr;
    }
-   throw new Error("Type error");
+   _error();
 }
 
 // <x|y> - скалярное произведение 
@@ -206,8 +218,7 @@ function _mul(x, y) {
 // <x|A , A|y> - умножение матриц x*A или A*y
 //
 function _dirak(x, y) {
-   const error = () => console.error(x, y);
-
+   
    let xm = x instanceof Array ? new Matrix(x) : null;
    let ym = y instanceof Array ? new Matrix(y) : null;
 
@@ -231,7 +242,7 @@ function _dirak(x, y) {
    if (x instanceof Complex && ym) {
       return ym.mul(x).arr;
    }    
-   error();  
+   _error();
 }
 
 // A # B - тензорное произведение 

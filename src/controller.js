@@ -39,6 +39,27 @@ function saveEquotions() {
 }
 
 // -------------------- divs suit ------------------------
+let lastClickedDivIdx = 0;
+
+function addDiv() {
+  i = $parent.childElementCount;
+  let div = makeOneDiv(i, "", "");
+  $parent.append(div);
+}
+
+
+function createDivsFromData(dataStr) {
+  let ds = dataStr.split('\n')
+    .map(x => x.trim())
+    .map(line => line == "" ? ["", ""] : line.split('=').map(x => x.trim())); 
+  
+    $parent.innerHTML = '';
+  for (let i = 0; i < ds.length; i++) {
+      let div = makeOneDiv(i, ds[i][0], ds[i][1]);
+      $parent.append(div);
+  }
+}
+
 
 function removeDiv() {
   $parent.lastChild.remove();
@@ -54,25 +75,22 @@ function removeAllDivs() {
 }
 
 
-function addDiv() {
-    i = $parent.childElementCount;
-    let div = makeOneDiv(i, "", "");
-    $parent.append(div);
-}
-
 function makeOneDiv(i, lvalue, rvalue) {
   let div = document.createElement("div");
   div.className="v0";
+  div.id = `div${i}`;
+  div.addEventListener('click', () => div_onclick(i));
   div.innerHTML = `
-<input id="name${i}" class="v1" value="${lvalue}" onclick="input_onclick(${i})">
+<input id="name${i}" class="v1" value="${lvalue}">
 <span class="v2">=</span> 
 <input id="value${i}" class="v3" value="${rvalue}" onchange="input_oncahge(${i})">
 <span id="info${i}" class="v4"></span>`;
   return div;
 }
 
-function input_onclick(i) {
+function div_onclick(i) {
   drawValuesItem(i, equotions);
+  lastClickedDivIdx = i;
 }
 
 function input_oncahge(i) {
@@ -80,16 +98,4 @@ function input_oncahge(i) {
   drawValuesItem(i, equotions);
 }
 
-
-function createDivsFromData(dataStr) {
-  let ds = dataStr.split('\n')
-    .map(x => x.trim())
-    .map(line => line == "" ? ["", ""] : line.split('=').map(x => x.trim())); 
-  
-    $parent.innerHTML = '';
-  for (let i = 0; i < ds.length; i++) {
-      let div = makeOneDiv(i, ds[i][0], ds[i][1]);
-      $parent.append(div);
-  }
-}
 
